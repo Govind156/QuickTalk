@@ -1,17 +1,45 @@
 import {useEffect, useState} from 'react'
 import {resolvePath, useNavigate} from 'react-router-dom'
-import { getloggedUser } from '../apiCalls/user'
+import { getloggedUser ,getAllUser} from '../apiCalls/user'
+import {useDispatch, useSelector} from 'react-redux'
+import { hideLoader, showLoader } from '../redux/loaderSlice'
+import {setUser,setAllUser} from '../redux/usersSlice'
+import {toast} from 'react-hot-toast'
 function ProtectedRoute({children}){
-  const [user,setUser]=useState(null)
+  // const [user,setUser]=useState(null)
+  const {user}=useSelector(state=>state.userReducer)
+  const dispatch=useDispatch()
   const navigate=useNavigate()
 
  const getloggedInUser=async ()=>{
+  let response=null
   try{
+    dispatch(showLoader())
     const response=await getloggedUser()
+    dispatch(hideLoader())
     if(response.success)
-       setUser(response.data)
-    else
+       dispatch(setUser(response.data))
+    else{
+     toast.error(response.message)
      navigate('/login')
+    }
+  }
+  catch(error){
+    navigate('/login')
+  }
+ }
+ const getAllUsersfromdb=async ()=>{
+  let response=null
+  try{
+    dispatch(showLoader())
+    const response=await getAllUser()
+    dispatch(hideLoader())
+    if(response.success)
+       dispatch(setAllUser(response.data))
+    else{
+     toast.error(response.message)
+     navigate('/login')
+    }
   }
   catch(error){
     navigate('/login')
@@ -21,18 +49,18 @@ function ProtectedRoute({children}){
  useEffect(()=>{
     if(localStorage.getItem('token')){
         getloggedInUser();
+        getAllUsersfromdb();
     }
     else{
         navigate('/login')
     }
- })
+ },[])
   return(
     <div>
-        <p>Name:{user?.firstName+' '+user?.LastName}</p>
+        {/* <p>Name:{user?.firstName+' '+user?.LastName}</p>
         <br></br>
         <p>Email:{user?.email}</p>
-        <br></br>
-      
+        <br></br> */}
         {children}
     </div>
   )

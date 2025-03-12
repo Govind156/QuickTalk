@@ -1,11 +1,11 @@
 import {useSelector} from 'react-redux'
 function Header(){
 const {user}=useSelector(state=>state.userReducer)
-    function getfullname(){
-    let fname=user?.firstName.toUpperCase()
-    let lname=user?.LastName.toUpperCase()
-    return fname+' '+lname;
-    }
+function getfullname() {
+    let fname = user?.firstName?.toUpperCase() || "";
+    let lname = user?.LastName?.toUpperCase() || "";
+    return fname + " " + lname;
+}
     function getinitials(){
         let f=user?.firstName.toUpperCase()[0]
         let l=user?.LastName.toUpperCase()[0]
