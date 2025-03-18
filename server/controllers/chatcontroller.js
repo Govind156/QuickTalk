@@ -27,7 +27,7 @@ router.get('/get-all-chats',Authmiddleware,async(req,res)=>{
         })
         return res.status(200).send({
             message:"all char fetch succesfully",
-            sucess:true,
+            success:true,
             data:allchat
         })
 
